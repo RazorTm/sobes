@@ -50,8 +50,12 @@ class SessionGroupCard extends StatelessWidget {
                 ),
               ],
             ),
-            child: Column(
-              children: List.generate(sessions.length, (index) {
+
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: sessions.length,
+              itemBuilder: (context, index) {
                 final s = sessions[index];
                 final isFirst = index == 0;
                 final isLast = index == sessions.length - 1;
@@ -60,7 +64,7 @@ class SessionGroupCard extends StatelessWidget {
                   isFirst: isFirst,
                   isLast: isLast,
                 );
-              }),
+              },
             ),
           ),
           Container(
@@ -68,9 +72,7 @@ class SessionGroupCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Total',
-                ),
+                const Text('Total'),
                 const SizedBox(width: 10),
                 Text('$total'),
               ],
