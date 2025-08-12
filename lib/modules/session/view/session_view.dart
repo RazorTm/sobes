@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../controller/session_controller.dart';
 import '../widgets/session_group_card.dart';
 
+// SessionScreen
 class SessionScreen extends StatelessWidget {
   const SessionScreen({super.key});
 
@@ -18,26 +19,27 @@ class SessionScreen extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           final entries = controller.groupedSessions.entries.toList();
-          return ListView.builder(
-            padding: const EdgeInsets.all(12),
-            itemCount: entries.length,
-            itemBuilder: (context, index) {
-              final entry = entries[index];
-              final date = entry.key;
+          return CustomScrollView(
+            slivers: [
+              SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final entry = entries[index];
+                  final date = entry.key;
+                  final sessions = controller.groupedSessions[date] ?? [];
+                  final total = sessions.fold<int>(
+                    0,
+                    (sum, s) => sum + s.amount,
+                  );
 
-              return Obx(() {
-                final sessions = controller.groupedSessions[date] ?? [];
-                final total = sessions.fold<int>(
-                  0,
-                  (sum, s) => sum + s.amount,
-                );
-                return SessionGroupCard(
-                  date: date,
-                  sessions: sessions,
-                  total: total,
-                );
-              });
-            },
+                  return SessionGroupCard(
+                    key: ValueKey(date),
+                    date: date,
+                    sessions: sessions,
+                    total: total,
+                  );
+                }, childCount: entries.length),
+              ),
+            ],
           );
         }),
       ),
